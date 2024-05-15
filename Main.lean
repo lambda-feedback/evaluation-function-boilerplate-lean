@@ -5,41 +5,22 @@ open Lean Json System
 
 -- Define a structure for the Params object
 structure Params where
-  tolerance : Option Float := none
-  tolerance_is_absolute : Bool := true
-  correct_response_feedback : String := "Correct"
-  incorrect_response_feedback : String := "Incorrect"
+  correct_response_feedback : Option String := "Correct"
+  incorrect_response_feedback : Option String := "Incorrect"
   deriving FromJson, ToJson
 
 -- Define a structure for the InputData object with custom JSON field names
 structure InputData where
   command : String
-  response : Float
-  answer : Float
-  params : Params
-
-instance : FromJson InputData where
-  fromJson? json := do
-    let command ← json.getObjValAs? String "command"
-    let response ← json.getObjValAs? Float "response"
-    let answer ← json.getObjValAs? Float "answer"
-    let params ← json.getObjValAs? Params "params"
-    pure { command, response, answer, params }
-
-instance : ToJson InputData where
-  toJson data :=
-    mkObj [
-      ("command", toJson data.command),
-      ("response", toJson data.response),
-      ("answer", toJson data.answer),
-      ("params", toJson data.params)
-    ]
+  response : String
+  answer : String
+  params : Option Params
+  deriving FromJson, ToJson
 
 -- Define a structure for the Result object
 structure Result where
   is_correct : Bool
   feedback : String
-  error : Option Float := none
   deriving ToJson
 
 -- Define a structure for the OutputData object
@@ -49,22 +30,15 @@ structure OutputData where
   deriving ToJson
 
 -- Function to compare the response and answer with given tolerance
-def compareValues (response : Float) (answer : Float) (tolerance : Option Float) (absolute : Bool) : Bool :=
-  match tolerance with
-  | some tol =>
-    if absolute then
-      Float.abs (response - answer) <= tol
-    else
-      Float.abs (response - answer) <= tol * Float.abs answer
-  | none =>
-    response == answer
+def compareValues (response : String) (answer : String) : Bool :=
+  response == answer
 
 -- Function to process input data and generate output data
 def processInputData (inputData : InputData) : OutputData :=
-  let isCorrect := compareValues inputData.response inputData.answer inputData.params.tolerance inputData.params.tolerance_is_absolute
-  let feedback := if isCorrect then inputData.params.correct_response_feedback else inputData.params.incorrect_response_feedback
-  let error := if isCorrect then none else some (Float.abs (inputData.response - inputData.answer))
-  let result := { is_correct := isCorrect, feedback := feedback, error := error }
+  let params := inputData.params.getD {}
+  let isCorrect := compareValues inputData.response inputData.answer
+  let feedback := if isCorrect then params.correct_response_feedback.getD "Correct!" else params.incorrect_response_feedback.getD "Incorrect!"
+  let result := { is_correct := isCorrect, feedback := feedback }
   { command := inputData.command, result := result }
 
 -- Function to read JSON from a file and parse it into InputData
