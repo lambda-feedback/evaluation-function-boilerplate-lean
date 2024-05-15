@@ -2,6 +2,6 @@
   "version": 7,
   "packagesDir": ".lake/packages",
   "packages": [],
-  "name": "evaluation_function_template",
+  "name": "evaluation_function",
   "lakeDir": ".lake"
 }

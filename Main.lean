@@ -81,7 +81,7 @@ def writeOutputData (outputFile : String) (outputData : OutputData) : IO Unit :=
 -- Main function
 def main (args : List String) : IO UInt32 := do
   if args.length < 2 then
-    IO.eprintln "Error: Insufficient arguments. Usage: evaluation_function_template <input_file> <output_file>"
+    IO.eprintln "Error: Insufficient arguments. Usage: evaluation_function <input_file> <output_file>"
     pure 1
   else
     let inputFile := args.get! 0
