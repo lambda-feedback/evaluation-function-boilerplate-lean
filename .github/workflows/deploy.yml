@@ -1,0 +1,179 @@
+name: Deploy to Lambda Feedback
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+env:
+  ECR_REPOSITORY_STAGING: lambda-feedback-staging-functions-repository
+  ECR_REPOSITORY_PRODUCTION: lambda-feedback-production-functions-repository
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    if: github.repository != 'lambda-feedback/evaluation-function-boilerplate-lean'
+    outputs:
+      evaluation_function_name: ${{ steps.evaluation_function_name.outputs.name }}
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Parse config.json
+        id: config
+        run: |
+          echo 'config<<EOF' >> $GITHUB_OUTPUT
+          cat ./config.json >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+
+      - name: Get Evaluation Function Name
+        id: evaluation_function_name
+        run: |
+          functionName="${{fromJson(steps.config.outputs.config).EvaluationFunctionName}}"
+          [[ -z "$functionName" ]] && { echo "Set EvaluationFunctionName in config.json" ; exit 1; }
+          echo "name=$functionName" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: setup
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    outputs:
+      image_name_staging: ${{ steps.image_names.outputs.staging }}
+      image_name_production: ${{ steps.image_names.outputs.production }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_ID }}
+          aws-secret-access-key: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_SECRET }}
+          aws-region: eu-west-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Login to Github Packages
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          flavor: |
+            latest=false
+          tags: |
+            type=raw,value=${{ needs.setup.outputs.evaluation_function_name }}
+          images: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_STAGING }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_PRODUCTION }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          target: lambda
+          push: true
+          provenance: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max,ignore-error=true
+
+      - name: Get Image Names
+        id: image_names
+        run: |
+          stagingImage="${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_STAGING }}:${{ needs.setup.outputs.evaluation_function_name }}"
+          productionImage="${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_PRODUCTION }}:${{ needs.setup.outputs.evaluation_function_name }}"
+          echo "staging=$stagingImage" >> "$GITHUB_OUTPUT"
+          echo "production=$productionImage" >> "$GITHUB_OUTPUT"
+
+  deploy-staging:
+    name: Deploy Staging
+    runs-on: ubuntu-latest
+    environment: production
+    needs: [setup, build]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_ID }}
+          aws-secret-access-key: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_SECRET }}
+          aws-region: eu-west-2
+
+      - name: Deploy Evaluation Function
+        id: deploy-evaluation-function
+        env:
+          BACKEND_API_URL: https://staging-api.lambdafeedback.com
+          API_KEY: ${{ secrets.FUNCTION_ADMIN_API_KEY }}
+          IMAGE_NAME: ${{ needs.build.outputs.image_name_staging }}
+          FUNCTION_NAME: ${{ needs.setup.outputs.evaluation_function_name }}
+        run: |
+          curl -f --location --request POST "$BACKEND_API_URL/grading-function/ensure" \
+          --header 'content-type: application/json' \
+          --data-raw "{
+              \"apiKey\": \"$API_KEY\",
+              \"dockerImageUri\": \"$IMAGE_NAME\",
+              \"functionName\": \"$FUNCTION_NAME\"
+          }"
+
+  deploy-production:
+    name: Deploy Production
+    runs-on: ubuntu-latest
+    environment: production
+    needs: [setup, build]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_ID }}
+          aws-secret-access-key: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_SECRET }}
+          aws-region: eu-west-2
+
+      - name: Deploy Evaluation Function
+        id: deploy-evaluation-function
+        env:
+          BACKEND_API_URL: https://prod-api.lambdafeedback.com
+          API_KEY: ${{ secrets.FUNCTION_ADMIN_API_KEY }}
+          IMAGE_NAME: ${{ needs.build.outputs.image_name_production }}
+          FUNCTION_NAME: ${{ needs.setup.outputs.evaluation_function_name }}
+        run: |
+          curl -f --location --request POST "$BACKEND_API_URL/grading-function/ensure" \
+          --header 'content-type: application/json' \
+          --data-raw "{
+              \"apiKey\": \"$API_KEY\",
+              \"dockerImageUri\": \"$IMAGE_NAME\",
+              \"functionName\": \"$FUNCTION_NAME\"
+          }"
