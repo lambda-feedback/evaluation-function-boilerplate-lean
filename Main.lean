@@ -5,10 +5,10 @@ open Lean Json System
 
 -- Define a structure for the Params object
 structure Params where
-  tolerance : Float
-  tolerance_is_absolute : Bool
-  correct_response_feedback : String
-  incorrect_response_feedback : String
+  tolerance : Option Float := none
+  tolerance_is_absolute : Bool := true
+  correct_response_feedback : String := "Correct"
+  incorrect_response_feedback : String := "Incorrect"
   deriving FromJson, ToJson
 
 -- Define a structure for the InputData object with custom JSON field names
@@ -49,11 +49,15 @@ structure OutputData where
   deriving ToJson
 
 -- Function to compare the response and answer with given tolerance
-def compareValues (response answer tolerance : Float) (absolute : Bool) : Bool :=
-  if absolute then
-    (Float.abs (response - answer)) <= tolerance
-  else
-    (Float.abs ((response - answer) / answer)) <= tolerance
+def compareValues (response : Float) (answer : Float) (tolerance : Option Float) (absolute : Bool) : Bool :=
+  match tolerance with
+  | some tol =>
+    if absolute then
+      Float.abs (response - answer) <= tol
+    else
+      Float.abs (response - answer) <= tol * Float.abs answer
+  | none =>
+    response == answer
 
 -- Function to process input data and generate output data
 def processInputData (inputData : InputData) : OutputData :=
