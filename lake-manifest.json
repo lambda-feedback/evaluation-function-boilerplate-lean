@@ -1,7 +1,14 @@
-{
-  "version": 7,
-  "packagesDir": ".lake/packages",
-  "packages": [],
-  "name": "evaluation_function",
-  "lakeDir": ".lake"
-}
+{"version": 7,
+ "packagesDir": ".lake/packages",
+ "packages":
+ [{"url": "https://github.com/leanprover-community/batteries",
+   "type": "git",
+   "subDir": null,
+   "rev": "60d622c124cebcecc000853cdae93f4251f4beb5",
+   "name": "batteries",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "main",
+   "inherited": false,
+   "configFile": "lakefile.lean"}],
+ "name": "evaluation",
+ "lakeDir": ".lake"}

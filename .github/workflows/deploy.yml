@@ -4,15 +4,23 @@ on:
   push:
     branches:
       - main
-      - master
   workflow_dispatch:
 
 jobs:
+  test:
+    name: Test
+    uses: lambda-feedback/evaluation-function-workflows/.github/workflows/lean_test.yml@main
+    with:
+      lint-module: "Evaluation"
+
   deploy:
     uses: lambda-feedback/evaluation-function-workflows/.github/workflows/deploy.yml@main
+    needs: [test]
     with:
       template-repository-name: 'lambda-feedback/evaluation-function-boilerplate-lean'
+      build-args: |
+        LEAN_VERSION=${{ needs.test.outputs.lean-version }}
     secrets:
       aws-key-id: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_ID }}
-      aws-secret-key: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_SECRET}}
-      function-admin-api-key: ${{ secrets.FUNCTION_ADMIN_API_KEY}}
+      aws-secret-key: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_SECRET }}
+      function-admin-api-key: ${{ secrets.FUNCTION_ADMIN_API_KEY }}
