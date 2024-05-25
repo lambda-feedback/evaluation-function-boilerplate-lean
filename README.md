@@ -195,3 +195,5 @@ git fetch --all
 ```bash
 git merge template/main --allow-unrelated-histories
 ```
+
+> Make sure to resolve any conflicts and keep the changes you want to keep.
