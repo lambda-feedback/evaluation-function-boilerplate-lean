@@ -18,6 +18,5 @@ jobs:
     uses: lambda-feedback/evaluation-function-workflows/.github/workflows/build.yml@main
     needs: [test]
     with:
-      template-repository-name: 'lambda-feedback/evaluation-function-boilerplate-lean'
       build-args: |
         LEAN_VERSION=${{ needs.test.outputs.lean-version }}
