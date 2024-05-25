@@ -2,6 +2,7 @@
 
 This repository contains the boilerplate code needed to create a containerized evaluation function written in Lean 4 Language.
 
+
 ## Quickstart
 
 This chapter helps you to quickly creating a new Lean 4 evaluation function using this template repository.
@@ -35,6 +36,7 @@ When deploying to Lambda Feedback, set the evaluation function name in the `conf
 #### 4. Develop the evaluation function
 
 You're ready to start developing your evaluation function. Head over to the [Development](#development) section to learn more.
+
 
 ## Usage
 
@@ -75,30 +77,6 @@ To run the evaluation function using `shimmy`, use the following command:
 ```bash
 shimmy -c ".lake/build/bin/evaluation" -i file
 ```
-
-## Deployment
-
-This section guides you through the deployment process of the evaluation function. If you want to deploy the evaluation function to Lambda Feedback, follow the steps in the [Lambda Feedback](#lambda-feedback) section. Otherwise, you can deploy the evaluation function to other platforms using the [Other Platforms](#other-platforms) section.
-
-### Deploy to Lambda Feedback
-
-Deploying the evaluation function to Lambda Feedback is simple and straightforward, as long as the repository is within the [Lambda Feedback organization](https://github.com/lambda-feedback).
-
-After configuring the repository, a [GitHub Actions workflow](.github/workflows/deploy.yml) will automatically build and deploy the evaluation function to Lambda Feedback as soon as changes are pushed to the main branch of the repository.
-
-**Configuration**
-
-The deployment configuration is stored in the `config.json` file. Choose a unique name for the evaluation function and set the `EvaluationFunctionName` field in [`config.json`](config.json).
-
-> The evaluation function name must be unique within the Lambda Feedback organization, and must be in `lowerCamelCase`. You can find a example configuration below:
-
-```json
-{
-  "EvaluationFunctionName": "compareStringsWithLean"
-}
-```
-
-### Deploy to other Platforms
 
 ## Development
 
@@ -168,3 +146,52 @@ docker build -t my-lean-evaluation-function .
 The Dockerfile accepts the following build arguments:
 
 - `LEAN_VERSION`: *(optional)* the version of Lean 4 to use.
+
+
+## Deployment
+
+This section guides you through the deployment process of the evaluation function. If you want to deploy the evaluation function to Lambda Feedback, follow the steps in the [Lambda Feedback](#lambda-feedback) section. Otherwise, you can deploy the evaluation function to other platforms using the [Other Platforms](#other-platforms) section.
+
+### Deploy to Lambda Feedback
+
+Deploying the evaluation function to Lambda Feedback is simple and straightforward, as long as the repository is within the [Lambda Feedback organization](https://github.com/lambda-feedback).
+
+After configuring the repository, a [GitHub Actions workflow](.github/workflows/deploy.yml) will automatically build and deploy the evaluation function to Lambda Feedback as soon as changes are pushed to the main branch of the repository.
+
+**Configuration**
+
+The deployment configuration is stored in the `config.json` file. Choose a unique name for the evaluation function and set the `EvaluationFunctionName` field in [`config.json`](config.json).
+
+> The evaluation function name must be unique within the Lambda Feedback organization, and must be in `lowerCamelCase`. You can find a example configuration below:
+
+```json
+{
+  "EvaluationFunctionName": "compareStringsWithLean"
+}
+```
+
+### Deploy to other Platforms
+
+## FAQ
+
+### Pull Changes from the Template Repository
+
+If you want to pull changes from the template repository to your repository, follow these steps:
+
+1. Add the template repository as a remote:
+
+```bash
+git remote add template https://github.com/lambda-feedback/evaluation-function-boilerplate-lean.git
+```
+
+2. Fetch changes from all remotes:
+
+```bash
+git fetch --all
+```
+
+3. Merge changes from the template repository:
+
+```bash
+git merge template/main --allow-unrelated-histories
+```
