@@ -40,6 +40,8 @@ You're ready to start developing your evaluation function. Head over to the [Dev
 
 ## Usage
 
+You can run the evaluation function either using [the pre-built Docker image](#run-the-docker-image) or build and run [the binary executable](#build-and-run-the-binary).
+
 ### Run the Docker Image
 
 The pre-built Docker image comes with [`shimmy`](https://github.com/lambda-feedback/shimmy) installed.
@@ -52,13 +54,15 @@ The pre-built Docker image is available on the GitHub Container Registry. You ca
 docker run -p 8080:8080 ghcr.io/lambda-feedback/my-lean-evaluation-function:latest
 ```
 
-### Run the Binary
-
-**Raw Mode**
+### Build and Run the Binary
 
 To run the evaluation function, you need to build the binary first. See the [Building the Evaluation Function](#building-the-evaluation-function) section for more information.
 
-Then, use the following command to run the evaluation function:
+After the function has been built, you can choose between running the function itself, ore using shimmy to run the function.
+
+**Raw Mode**
+
+Use the following command to run the evaluation function directly:
 
 ```bash
 .lake/build/bin/evaluation request.json response.json
@@ -171,6 +175,12 @@ The deployment configuration is stored in the `config.json` file. Choose a uniqu
 ```
 
 ### Deploy to other Platforms
+
+If you want to deploy the evaluation function to other platforms, you can use the Docker image to deploy the evaluation function.
+
+Please refer to the deployment documentation of the platform you want to deploy the evaluation function to.
+
+If you need help with the deployment, feel free to reach out to the Lambda Feedback team by creating an issue in the template repository.
 
 ## FAQ
 
