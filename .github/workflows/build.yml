@@ -13,6 +13,10 @@ jobs:
     uses: lambda-feedback/evaluation-function-workflows/.github/workflows/lean_test.yml@main
     with:
       lint-module: "Evaluation"
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
 
   build:
     uses: lambda-feedback/evaluation-function-workflows/.github/workflows/build.yml@main
@@ -20,3 +24,7 @@ jobs:
     with:
       build-args: |
         LEAN_VERSION=${{ needs.test.outputs.lean-version }}
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
