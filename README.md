@@ -41,9 +41,11 @@ When deploying to Lambda Feedback, set the evaluation function name in the `conf
 
 You're ready to start developing your evaluation function. Head over to the [Development](#development) section to learn more.
 
-#### 5. Delete this chapter
+#### 5. Update the README
 
-Don't forget to delete the Quickstart chapter from the `README.md` file after you've completed these steps.
+In the `README.md` file, change the title and description so it fits the purpose of your evaluation function.
+
+Also, don't forget to delete the Quickstart chapter from the `README.md` file after you've completed these steps.
 
 ## Usage
 
