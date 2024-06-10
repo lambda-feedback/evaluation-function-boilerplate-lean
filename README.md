@@ -6,6 +6,7 @@ This repository contains the boilerplate code needed to create a containerized e
 
 This chapter helps you to quickly creating a new Lean 4 evaluation function using this template repository.
 
+> [!NOTE]
 > After setting up the evaluation function, delete this chapter from the `README.md` file, and add your own documentation.
 
 #### 1. Create a new repository
@@ -14,10 +15,12 @@ This chapter helps you to quickly creating a new Lean 4 evaluation function usin
 
 - Choose the owner, and pick a name for the new repository.
 
+  > [!IMPORTANT]
   > If you want to deploy the evaluation function to Lambda Feedback, make sure to choose the Lambda Feedback organization as the owner.
 
 - Set the visibility to `Public` or `Private`.
 
+  > [!IMPORTANT]
   > If you want to use GitHub [deployment protection rules](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#deployment-protection-rules), make sure to set the visibility to `Public`.
 
 - Click on `Create repository`.
@@ -50,6 +53,7 @@ You can run the evaluation function either using [the pre-built Docker image](#r
 
 The pre-built Docker image comes with [`shimmy`](https://github.com/lambda-feedback/shimmy) installed.
 
+> [!TIP]
 > Shimmy is a small application that listens for incoming HTTP requests, validates the incoming data and forwards it to the underlying evaluation function. Learn more about shimmy in the [Documentation](https://github.com/lambda-feedback/shimmy).
 
 The pre-built Docker image is available on the GitHub Container Registry. You can run the image using the following command:
@@ -77,8 +81,6 @@ This will run the evaluation function using the input data from `request.json` a
 **Shimmy**
 
 To have a more user-friendly experience, you can use [`shimmy`](https://github.com/lambda-feedback/shimmy) to run the evaluation function.
-
-> Shimmy is a small application that listens for incoming HTTP requests, validates the incoming data and forwards it to the underlying evaluation function. Learn more about shimmy in the [Documentation](https://github.com/lambda-feedback/shimmy).
 
 To run the evaluation function using `shimmy`, use the following command:
 
@@ -169,6 +171,7 @@ After configuring the repository, a [GitHub Actions workflow](.github/workflows/
 
 The deployment configuration is stored in the `config.json` file. Choose a unique name for the evaluation function and set the `EvaluationFunctionName` field in [`config.json`](config.json).
 
+> [!IMPORTANT]
 > The evaluation function name must be unique within the Lambda Feedback organization, and must be in `lowerCamelCase`. You can find a example configuration below:
 
 ```json
@@ -209,4 +212,5 @@ git fetch --all
 git merge template/main --allow-unrelated-histories
 ```
 
+> [!WARNING]
 > Make sure to resolve any conflicts and keep the changes you want to keep.
