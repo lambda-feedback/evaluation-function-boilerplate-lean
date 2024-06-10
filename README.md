@@ -2,10 +2,11 @@
 
 This repository contains the boilerplate code needed to create a containerized evaluation function written in Lean 4 Language.
 
-
 ## Quickstart
 
 This chapter helps you to quickly creating a new Lean 4 evaluation function using this template repository.
+
+> After setting up the evaluation function, delete this chapter from the `README.md` file, and add your own documentation.
 
 #### 1. Create a new repository
 
@@ -37,6 +38,9 @@ When deploying to Lambda Feedback, set the evaluation function name in the `conf
 
 You're ready to start developing your evaluation function. Head over to the [Development](#development) section to learn more.
 
+#### 5. Delete this chapter
+
+Don't forget to delete the Quickstart chapter from the `README.md` file after you've completed these steps.
 
 ## Usage
 
@@ -149,8 +153,7 @@ docker build -t my-lean-evaluation-function .
 
 The Dockerfile accepts the following build arguments:
 
-- `LEAN_VERSION`: *(optional)* the version of Lean 4 to use.
-
+- `LEAN_VERSION`: _(optional)_ the version of Lean 4 to use.
 
 ## Deployment
 
