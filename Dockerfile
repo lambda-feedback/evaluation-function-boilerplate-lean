@@ -2,12 +2,6 @@ ARG LEAN_VERSION=4.8.0-rc2
 
 FROM ghcr.io/lambda-feedback/evaluation-function-base/lean:${LEAN_VERSION} as build
 
-# git is required to fetch the lean version specified in `lean-toolchain` if
-# it differs from `LEAN_VERSION`, and to fetch external lake dependencies.
-RUN apt-get update && apt-get install -y \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
 COPY . .
 
 RUN lake build
