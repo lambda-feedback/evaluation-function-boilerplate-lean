@@ -53,10 +53,10 @@ You can run the evaluation function either using [the pre-built Docker image](#r
 
 ### Run the Docker Image
 
-The pre-built Docker image comes with [`shimmy`](https://github.com/lambda-feedback/shimmy) installed.
+The pre-built Docker image comes with [Shimmy](https://github.com/lambda-feedback/shimmy) installed.
 
 > [!TIP]
-> Shimmy is a small application that listens for incoming HTTP requests, validates the incoming data and forwards it to the underlying evaluation function. Learn more about shimmy in the [Documentation](https://github.com/lambda-feedback/shimmy).
+> Shimmy is a small application that listens for incoming HTTP requests, validates the incoming data and forwards it to the underlying evaluation function. Learn more about Shimmy in the [Documentation](https://github.com/lambda-feedback/shimmy).
 
 The pre-built Docker image is available on the GitHub Container Registry. You can run the image using the following command:
 
@@ -68,7 +68,7 @@ docker run -p 8080:8080 ghcr.io/lambda-feedback/my-lean-evaluation-function:late
 
 To run the evaluation function, you need to build the binary first. See the [Building the Evaluation Function](#building-the-evaluation-function) section for more information.
 
-After the function has been built, you can choose between running the function itself, ore using shimmy to run the function.
+After the function has been built, you can choose between running the function itself, ore using Shimmy to run the function.
 
 **Raw Mode**
 
@@ -82,9 +82,9 @@ This will run the evaluation function using the input data from `request.json` a
 
 **Shimmy**
 
-To have a more user-friendly experience, you can use [`shimmy`](https://github.com/lambda-feedback/shimmy) to run the evaluation function.
+To have a more user-friendly experience, you can use [Shimmy](https://github.com/lambda-feedback/shimmy) to run the evaluation function.
 
-To run the evaluation function using `shimmy`, use the following command:
+To run the evaluation function using Shimmy, use the following command:
 
 ```bash
 shimmy -c ".lake/build/bin/evaluation" -i file
