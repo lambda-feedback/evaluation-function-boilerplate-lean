@@ -1,6 +1,6 @@
 ARG LEAN_VERSION=4.8.0-rc2
 
-FROM ghcr.io/lambda-feedback/evaluation-function-base/lean:${LEAN_VERSION} as build
+FROM ghcr.io/lambda-feedback/evaluation-function-base/lean:${LEAN_VERSION} AS build
 
 COPY . .
 
