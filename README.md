@@ -110,9 +110,6 @@ In order to develop, test and build the evaluation function, you need to have th
 ### Repository Structure
 
 ```bash
-.github/workflows/
-    build.yml       # builds the public evaluation function image
-    deploy.yml      # deploys the evaluation function to Lambda Feedback
 
 src/                # evaluation function source code
     Evaluation.lean # module containing the evaluation function

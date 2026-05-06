@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    uses: lambda-feedback/evaluation-function-workflows/.github/workflows/deploy.yml@deploy-request
+    uses: lambda-feedback/evaluation-function-workflows/.github/workflows/deploy.yml@main
     with:
       template-repository-name: "lambda-feedback/evaluation-function-boilerplate-python"
       build-file: "app/Dockerfile"
