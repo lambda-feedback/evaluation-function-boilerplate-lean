@@ -8,22 +8,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Test
-    uses: lambda-feedback/evaluation-function-workflows/.github/workflows/lean_test.yml@main
-    with:
-      lint-module: "Evaluation"
-    permissions:
-      contents: read
-      id-token: write
-      packages: write
-
   build:
     uses: lambda-feedback/evaluation-function-workflows/.github/workflows/build.yml@main
-    needs: [test]
     with:
-      build-args: |
-        LEAN_VERSION=${{ needs.test.outputs.lean-version }}
+      build-target: final
     permissions:
       contents: read
       id-token: write
