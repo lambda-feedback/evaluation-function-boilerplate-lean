@@ -1,0 +1,21 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: lambda-feedback/evaluation-function-workflows/.github/workflows/deploy.yml@main
+    with:
+      template-repository-name: "lambda-feedback/evaluation-function-boilerplate-python"
+      build-platforms: "aws"
+      environment: "staging"
+      lfs: false
+    secrets:
+      aws-key-id: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_ID }}
+      aws-secret-key: ${{ secrets.LAMBDA_CONTAINER_PIPELINE_AWS_SECRET}}
+      function-admin-api-key: ${{ secrets.FUNCTION_ADMIN_API_KEY}}
+      gcp_credentials: ${{ secrets.GCP_DEPLOY }}

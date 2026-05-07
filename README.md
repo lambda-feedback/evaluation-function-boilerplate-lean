@@ -2,6 +2,10 @@
 
 This repository contains the boilerplate code needed to create a containerized evaluation function written in Lean 4 Language.
 
+## Deployment
+[![Create Release Request](https://img.shields.io/badge/Create%20Release%20Request-blue?style=for-the-badge)](https://github.com/lambda-feedback/{REPO_NAME_HERE}/issues/new?template=release-request.yml)
+To deploy to production, update the README button above to point to the correct repository.
+
 ## Quickstart
 
 This chapter helps you to quickly creating a new Lean 4 evaluation function using this template repository.
@@ -106,9 +110,6 @@ In order to develop, test and build the evaluation function, you need to have th
 ### Repository Structure
 
 ```bash
-.github/workflows/
-    build.yml       # builds the public evaluation function image
-    deploy.yml      # deploys the evaluation function to Lambda Feedback
 
 src/                # evaluation function source code
     Evaluation.lean # module containing the evaluation function
